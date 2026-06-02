@@ -638,7 +638,7 @@ function buildNav(){
   return el("nav",{className:"nav"},
     el("button",{className:"logo",style:{display:"flex",alignItems:"center",gap:"8px",background:"none",border:"none",cursor:"pointer",padding:"2px"},onclick:()=>{view="shop";render();}},el("img",{src:"data:image/jpeg;base64,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",style:{height:"38px",width:"38px",borderRadius:"50%",objectFit:"cover"},alt:"ANDORA"}),el("span",{style:{fontSize:"1rem",fontWeight:"900",color:"#ffffff",letterSpacing:"3px",fontFamily:"Georgia,serif"}},"ANDORA")),
     el("div",{style:{display:"flex",gap:"6px",alignItems:"center"}},
-      !user?el("button",{className:"ibt",onclick:()=>showAuth()},"👤"):
+      !user?el("div",{style:{display:"flex",gap:"4px"}},el("button",{className:"ibt",onclick:()=>showAuth()},"👤"),el("button",{className:"ibt",onclick:()=>showTrack()},"📦")):
         user.role==="c"?[el("button",{className:"ibt",onclick:()=>{view="profile";render();}},"👤"),el("button",{className:"ibt",onclick:()=>showTrack()},"📦")]:
         el("button",{className:"ibt",onclick:()=>{view="admin";render();}},"⚙️"),
       el("button",{className:"ibt",onclick:()=>($("cdraw")&&$("cdraw").classList).toggle("on")},
@@ -827,7 +827,7 @@ function showAuth(mode="login"){
               user={role:"admin",name:"Admin"};closeOv();view="admin";render();toast("ยินดีต้อนรับ Admin 👋");
             }else{
               const foundShop=shops.find(function(s){return s.username===aF.u&&s.password===aF.p&&s.active;});
-              if(foundShop){user={role:"shop",shopId:foundShop.id,name:foundShop.name};closeOv();view="admin";render();toast("ยินดีต้อนรับ "+foundShop.name+" 🏪");}
+              if(foundShop){user={role:"shop",shopId:foundShop.id,name:foundShop.name};window._fShopOrder=null;closeOv();view="admin";render();toast("ยินดีต้อนรับ "+foundShop.name+" 🏪");}
               else{aErr="ข้อมูลไม่ถูกต้อง";drawAuth();}
             }
             return;}
@@ -993,21 +993,77 @@ function renderCo(){
 
 // ── TRACK ──────────────────────────────────────────────────────────
 function showTrack(){
-  const myO=orders.filter(o=>o.uid===(user&&user.id));
-  const SC={"รอการชำระเงิน":"#e67e22","รอยืนยัน":"#f0a500","ยืนยันแล้ว":P,"กำลังจัดส่งมาที่ร้าน":"#8e44ad","กำลังจัดส่งให้ลูกค้า":"#2980b9","จัดส่งแล้ว":"#27ae60","ยกเลิก":"#c00"};
-  showOv(el("div",{className:"mod",onclick:e=>e.stopPropagation()},
-    el("button",{className:"mcl",onclick:closeOv},"✕"),
-    el("p",{style:{fontWeight:"900",fontSize:"1.05rem",textAlign:"center",margin:"4px 0 12px"}},"📦 ติดตามสินค้า"),
-    myO.length===0?el("p",{style:{textAlign:"center",color:"#8A7A9E",padding:"16px 0"}},"ยังไม่มีออเดอร์"):
-    el("div",null,...myO.map(o=>el("div",{style:{background:C,borderRadius:"10px",padding:"10px 11px",marginBottom:"7px"}},
-      el("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"4px"}},el("b",{style:{fontSize:".8rem"}},"#"+String(o.id).slice(-6)),el("span",{style:{padding:"3px 9px",borderRadius:"18px",background:SC[o.status]||"#8A7A9E",color:"#fff",fontSize:".68rem",fontWeight:"700"}},o.status)),
-      el("div",{style:{display:"flex",justifyContent:"space-between"}},el("span",{style:{fontSize:".7rem",color:"#8A7A9E"}},o.carrier+"·"+o.branch),el("b",{style:{color:P,fontSize:".77rem"}},"₭"+fmt(o.total)))
-    ))),
-    el("button",{className:"btn btn-d",style:{marginTop:"8px"},onclick:closeOv},"ปิด")
-  ));
+  const SC={"รอยืนยัน":"#f0a500","ยืนยันแล้ว":"#7B4FA0","กำลังจัดส่งมาที่ร้าน":"#8e44ad","กำลังจัดส่งให้ลูกค้า":"#2980b9","จัดส่งแล้ว":"#27ae60","ยกเลิก":"#c00"};
+  let searchId="",result=null,searched=false;
+  function doSearch(){
+    searched=true;
+    const q=searchId.trim().replace("#","");
+    if(!q){drawTrack();return;}
+    result=orders.find(function(o){return String(o.id).slice(-6)===q||String(o.id)===q;});
+    drawTrack();
+  }
+  function drawTrack(){
+    const inp=document.createElement("input");
+    inp.className="inp";inp.placeholder="กรอกเลขออเดอร์ เช่น 900001";
+    inp.value=searchId;inp.type="tel";
+    inp.style.cssText="letter-spacing:2px;font-size:1rem;text-align:center;margin-bottom:6px";
+    inp.addEventListener("input",function(){searchId=this.value;searched=false;});
+    inp.addEventListener("keydown",function(e){if(e.key==="Enter")doSearch();});
+    const btn=el("button",{className:"btn btn-p",style:{marginTop:"0"},onclick:doSearch},"🔍 ค้นหาออเดอร์");
+    // Result area
+    let res=null;
+    if(searched&&!result){
+      res=el("div",{style:{textAlign:"center",padding:"16px 0",color:"#c00",fontSize:".85rem"}},
+        "❌ ไม่พบออเดอร์ #"+searchId.trim()
+      );
+    } else if(result){
+      const o=result;
+      const sc=SC[o.status]||"#888";
+      const items=el("div",{style:{background:"#fff",borderRadius:"8px",padding:"8px 10px",marginBottom:"8px"}},
+        el("div",{style:{fontSize:".72rem",fontWeight:"700",color:"#3B2060",marginBottom:"4px"}},"รายการสินค้า"),
+        ...( o.items||[]).map(function(it){
+          return el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:".78rem",padding:"3px 0",borderBottom:"1px solid #f0ecf7"}},
+            el("span",null,(it.preorder?"📦 ":"")+it.n+(it.c?" ("+it.c+(it.s?"/"+it.s:"")+")":" ")+"×"+it.q),
+            el("span",{style:{fontWeight:"600"}},"₭"+(it.p*it.q).toLocaleString())
+          );
+        })
+      );
+      const tracking=o.trackingNo?el("div",{style:{background:"#e8f5e9",borderRadius:"8px",padding:"10px 12px",marginBottom:"8px",display:"flex",gap:"10px",alignItems:"center"}},
+        el("div",{style:{fontSize:"1.3rem"}},"📬"),
+        el("div",null,
+          el("div",{style:{fontSize:".7rem",color:"#1a7a3a",fontWeight:"700"}},"เลข Tracking สินค้า"),
+          el("div",{style:{fontSize:".9rem",fontWeight:"900",color:"#1a7a3a",letterSpacing:"1px"}},o.trackingNo),
+          el("div",{style:{fontSize:".68rem",color:"#5a8a5a",marginTop:"2px"}},"ตรวจสอบที่บริษัทขนส่ง: "+o.carrier)
+        )
+      ):null;
+      res=el("div",{style:{background:"#F3F0F7",borderRadius:"12px",padding:"14px",marginTop:"10px"}},
+        el("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px"}},
+          el("div",{style:{fontWeight:"900",fontSize:"1rem",color:"#2A1450"}},"#"+String(o.id).slice(-6)),
+          el("span",{style:{background:sc,color:"#fff",padding:"4px 12px",borderRadius:"20px",fontSize:".75rem",fontWeight:"700"}},o.status)
+        ),
+        el("div",{style:{fontSize:".82rem",color:"#5a4080",marginBottom:"8px"}},
+          el("span",{style:{marginRight:"12px"}},"👤 "+o.name),
+          el("span",null,"📅 "+o.at)
+        ),
+        tracking,
+        items,
+        el("div",{style:{display:"flex",justifyContent:"space-between",fontWeight:"800",fontSize:".9rem",color:"#5D2D7A",padding:"6px 0"}},
+          el("span",null,"💳 ยอดโอนเงิน"),
+          el("span",null,"₭"+(o.total||0).toLocaleString())
+        ),
+        o.shopName?el("div",{style:{fontSize:".72rem",color:"#8A7A9E",marginTop:"4px"}},"🏪 "+o.shopName):null
+      );
+    }
+    showOv(el("div",{className:"mod",onclick:function(e){e.stopPropagation();}},
+      el("button",{className:"mcl",onclick:closeOv},"✕"),
+      el("p",{style:{fontWeight:"700",fontSize:"1rem",marginBottom:"12px"}},"📦 ติดตามออเดอร์"),
+      inp,btn,res
+    ));
+    setTimeout(function(){var i=document.querySelector(".mod input[type=tel]");if(i)i.focus();},100);
+  }
+  drawTrack();
 }
 
-// ── ADMIN ──────────────────────────────────────────────────────────
 function buildAdmin(){
   const isShop=user&&user.role==="shop";
   const isSuperAdmin=user&&user.role==="admin";
@@ -1039,18 +1095,21 @@ function buildAdminTab(){
   const shopTabMap={0:0,1:1,2:3,3:5,4:6,5:9};
   const effectiveTabMap=isSuperAdmin?superAdminTabMap:shopTabMap;
   const effectiveTab=(isShop||isSuperAdmin)?(effectiveTabMap[aTab]!==undefined?effectiveTabMap[aTab]:aTab):aTab;
-  if(effectiveTab===0)return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"สินค้า ("+prods.length+")"),
-    ...prods.map(p=>el("div",{className:"prow"},
+  if(effectiveTab===0){
+    const myProds=isShop?prods.filter(function(p){return p.shopId===(user&&user.shopId);}):prods;
+    return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"สินค้า ("+myProds.length+")"),
+    ...myProds.map(p=>el("div",{className:"prow"},
       el("div",{style:{width:"36px",height:"36px",borderRadius:"8px",background:p.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.2rem",flexShrink:"0",overflow:"hidden"}},isUrl(p.img)?el("img",{src:p.img,alt:"",style:{width:"100%",height:"100%",objectFit:"cover"}}):p.img),
       el("div",{style:{flex:"1",minWidth:"0"}},el("div",{style:{fontSize:".79rem",fontWeight:"500",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},p.name),el("div",{style:{fontSize:".65rem",color:"#8A7A9E"}},p.cat+" · ₭"+fmt(p.price))),
       el("button",{style:{background:"none",border:"none",cursor:"pointer",fontSize:".9rem",color:P,fontFamily:"inherit"},onclick:()=>showEditProd(p)},"✏️"),
       el("button",{style:{background:"none",border:"none",cursor:"pointer",fontSize:".9rem",color:"#c00",fontFamily:"inherit"},onclick:()=>{prods=prods.filter(x=>x.id!==p.id);deleteFromCloud("prods",p.id);render();toast("ลบสินค้าแล้ว");}},"🗑")
     ))
   );
+  }
   if(effectiveTab===1){
     const v={name:"",cat:"โยคะ",price:"",cost:"",colors:"",sizes:"",tag:"",img:null};
     const inp=(ph,k,t="text")=>{const i=el("input",{className:"inp",placeholder:ph,type:t});i.oninput=e=>v[k]=e.target.value;return i;};
-    const prev=el("div",{style:{display:"none",marginBottom:"8px"}});
+    const prev=el("div",{style:{display:"block",marginBottom:"8px",minHeight:"40px"}});
     const fi=el("input",{type:"file",accept:"image/*",capture:"environment",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;
               const r=new FileReader();
               r.onload=function(ev){
@@ -1081,7 +1140,7 @@ function buildAdminTab(){
         (()=>{const cb=document.createElement("input");cb.type="checkbox";cb.style.cssText="width:18px;height:18px;cursor:pointer;accent-color:#5D2D7A;";cb.addEventListener("change",function(){v.refundable=this.checked;});return cb;})(),
         el("span",{style:{fontSize:".85rem",fontWeight:"600",color:"#2A1450"}},"🔄 คืนสินค้าได้ภายใน 3 วัน")
       ),
-      el("label",{className:"lbl"},"🖼 รูปภาพ"),prev,el("label",{className:"uplbl"},"📷 อัปโหลดรูป",fi),
+      el("label",{className:"lbl"},"🖼 รูปภาพ"),prev,el("label",{className:"uplbl",style:{marginBottom:"8px",display:"block"}},"📷 เลือกรูปสินค้า",fi),
       el("button",{className:"btn btn-p",onclick:()=>{
         if(!v.name||!v.price){toast("กรุณากรอกชื่อและราคา");return;}
         const cs=v.colors.split(",").map(s=>s.trim()).filter(Boolean);
@@ -1113,7 +1172,8 @@ function buildAdminTab(){
     );
   }
   if(effectiveTab===3){
-    return el("div",null,...prods.map(p=>{
+    const stockProds=isShop?prods.filter(function(p){return p.shopId===(user&&user.shopId);}):prods;
+    return el("div",null,...stockProds.map(p=>{
       const cs=p.colors||[],sz=p.sizes||[];
       const combos=cs.flatMap(c=>sz.map(s=>({k:c+"|"+s,c,s,q:(p.stock?p.stock[c+"|"+s]||0:0)||0})));
       if(!combos.length)return null;
@@ -1140,6 +1200,7 @@ function buildAdminTab(){
   if(effectiveTab===5){
     const shopOrders=isShop?orders.filter(function(o){return o.shopId===(user&&user.shopId);}):orders;
     if(!window._fShopOrder)window._fShopOrder=null;
+    if(isShop)window._fShopOrder=null; // shop only sees own orders
     const fShopOrder=window._fShopOrder;
     const shopFilteredOrders=(!isShop&&fShopOrder)?shopOrders.filter(o=>(o.items||[]).some(function(i){const p=prods.find(function(x){return x.name===i.n;});return p&&p.shopId===fShopOrder;})):shopOrders;
     const fO=fOrderSt?shopFilteredOrders.filter(o=>o.status===fOrderSt):shopFilteredOrders;
@@ -1165,12 +1226,29 @@ function buildAdminTab(){
         el("div",null,...fO.map(o=>{
           const cost=(o.items||[]).reduce((s,i)=>s+(i.cost||0)*i.q,0);
           const profit=o.total-cost;
-          const sel=el("select",{style:{padding:"4px 7px",borderRadius:"7px",border:"1.5px solid #C4A8DC",background:"#fff",fontSize:".71rem",color:"#2D1060",fontWeight:"600",cursor:"pointer",outline:"none",fontFamily:"inherit"},onchange:e=>{o.status=e.target.value;saveToCloud("orders",o.id,o);toast("อัปเดตแล้ว");}},
+          const sel=el("select",{style:{padding:"4px 7px",borderRadius:"7px",border:"1.5px solid #C4A8DC",background:"#fff",fontSize:".71rem",color:"#2D1060",fontWeight:"600",cursor:"pointer",outline:"none",fontFamily:"inherit"},onchange:function(e){o.status=e.target.value;saveToCloud("orders",o.id,o);toast("อัปเดตแล้ว");render();}},
             ...STS.map(s=>{const opt=el("option",{value:s},s);if(o.status===s)opt.selected=true;return opt;})
           );
           return el("div",{style:{background:C,borderRadius:"10px",padding:"9px 11px",marginBottom:"7px"}},
             el("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"3px",flexWrap:"wrap",gap:"4px"}},el("b",{style:{fontSize:".79rem"}},"#"+String(o.id).slice(-6)+" — "+o.name),sel),
             el("div",{style:{fontSize:".69rem",color:"#5a4080",marginBottom:"6px"}},"📞 "+o.phone+" · "+o.carrier+" · "+o.branch),
+            (isSuperAdmin&&(o.status==="กำลังจัดส่งให้ลูกค้า"||o.status==="จัดส่งแล้ว"))?el("div",{style:{marginBottom:"8px"}},
+              el("div",{style:{fontSize:".68rem",color:"#27ae60",fontWeight:"700",marginBottom:"3px"}},"📬 เลข Tracking"),
+              (()=>{
+                const ti=document.createElement("input");
+                ti.className="inp";ti.placeholder="เช่น RA123456789TH";
+                ti.value=o.trackingNo||"";
+                ti.style.cssText="margin-bottom:0;font-size:.78rem;border-color:#27ae60";
+                ti.addEventListener("change",function(){
+                  o.trackingNo=this.value.trim();
+                  saveToCloud("orders",o.id,o);
+                  toast("บันทึก Tracking ✓");
+                });
+                return ti;
+              })()
+            ):
+            // Shop: show tracking read-only if exists
+            (isShop&&o.trackingNo)?el("div",{style:{background:"#e8f5e9",borderRadius:"8px",padding:"6px 10px",marginBottom:"6px",fontSize:".75rem",color:"#1a7a3a",fontWeight:"600"}},"📬 Tracking: "+o.trackingNo):null,
             el("div",{style:{background:"#F3F0F7",borderRadius:"8px",padding:"8px 10px",marginBottom:"6px"}},
               el("div",{style:{fontSize:".7rem",fontWeight:"700",color:"#3B2060",marginBottom:"5px"}},"รายการสินค้า:"),
               ...(o.items||[]).map(i=>{const prod=prods.find(x=>x.name===i.n);return el("div",{style:{display:"flex",alignItems:"center",gap:"7px",marginBottom:"5px"}},
@@ -1194,6 +1272,7 @@ function buildAdminTab(){
             ),
             el("div",{style:{display:"flex",gap:"6px",flexWrap:"wrap",marginTop:"6px"}},
             el("button",{style:{background:"#5D2D7A",color:"#fff",border:"none",padding:"5px 11px",borderRadius:"8px",fontSize:".72rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit"},onclick:function(){downloadOrderPDF(o);}},"📥 ดาวน์โหลด PDF"),
+            el("button",{style:{background:"none",border:"1.5px solid #5D2D7A",color:"#5D2D7A",padding:"5px 11px",borderRadius:"8px",fontSize:".72rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit"},onclick:function(){printOrder(o);}},"🖨 พิมพ์"),
             (isSuperAdmin&&o.phone)?el("button",{style:{background:"#25D366",color:"#fff",border:"none",padding:"5px 11px",borderRadius:"8px",fontSize:".72rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit"},onclick:()=>{const msg="แจ้งสถานะออเดอร์\n\nออเดอร์หมายเลข "+String(o.id).slice(-6)+" ของคุณ ("+o.name+") ขณะนี้อยู่ในสถานะ: "+o.status+"\n\nขอบคุณที่ใช้บริการ ANDORA Store หากมีคำถามใดๆ กรุณาติดต่อเราได้เลยค่ะ";window.open("https://wa.me/"+o.phone.replace(/[^0-9+]/g,"")+"?text="+encodeURIComponent(msg),"_blank");}},"ส่งอัปเดตสถานะ WhatsApp"):null)
           );
         }))
