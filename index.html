@@ -146,6 +146,7 @@ function saveAll(){
 const P="#5D2D7A",D="#1A1020",B="#E8D8F5",C="#F3F0F7";
 const fmt=n=>Number(n).toLocaleString("lo-LA");
 const isUrl=s=>s&&(s.startsWith("http")||s.startsWith("data:"));
+const getImg=p=>{const im=p.img;return(im&&im!=="__local__")?im:(p.imgs&&p.imgs[0]&&p.imgs[0]!=="__local__"?p.imgs[0]:"🛍");};
 const rdy=p=>p.stock&&Object.values(p.stock).some(v=>v>0);
 const CARRIERS=["ຮຸ່ງອາລຸນ","ອານຸສິດ","ມີໄຊ"];
 const STS=["รอการชำระเงิน","รอยืนยัน","ยืนยันแล้ว","กำลังจัดส่งมาที่ร้าน","กำลังจัดส่งให้ลูกค้า","จัดส่งแล้ว","ยกเลิก"];
@@ -347,8 +348,8 @@ function buildCard(p,PM){
   return el("div",{className:"card",onclick:()=>showProduct(p)},
     el("div",{className:"cimg",style:{background:p.bg}},
       (()=>{
-      const imgs=p.imgs&&p.imgs.length>0?p.imgs:[p.img];
-      return isUrl(imgs[0])?el("img",{src:imgs[0],alt:p.name,loading:"lazy",style:{width:"100%",height:"100%",objectFit:"cover"}}):imgs[0];
+      const imgs=(p.imgs&&p.imgs.length>0?p.imgs:[p.img]).filter(i=>i&&i!=="__local__");
+      return imgs.length>0&&isUrl(imgs[0])?el("img",{src:imgs[0],alt:p.name,loading:"lazy",style:{width:"100%",height:"100%",objectFit:"cover"}}):el("span",null,p.emoji||"🛍");
     })(),
       promo?el("span",{className:"ctag",style:{background:"#ff6b35"}},"-"+promo.pct+"%"):p.tag?el("span",{className:"ctag",style:{background:p.tag==="sale"?P:D}},p.tag==="sale"?"ขายดี":"ใหม่"):null,
       !rdy(p)?el("span",{className:"ctag",style:{top:"auto",bottom:"7px",background:"#3D2060"}},"📦 พรีออเดอร์"):null
@@ -380,7 +381,7 @@ function showProduct(p){
     showOv(el("div",{className:"mod",onclick:e=>e.stopPropagation()},
       el("button",{className:"mcl",onclick:closeOv},"✕"),
       (()=>{
-      const imgs=p.imgs&&p.imgs.length>0?p.imgs:[p.img];
+      const imgs=(p.imgs&&p.imgs.length>0?p.imgs:[p.img]).filter(i=>i&&i!=="__local__");
       if(imgs.length<=1){
         return el("div",{style:{aspectRatio:"1",borderRadius:"12px",background:p.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"4rem",marginBottom:"12px",overflow:"hidden"}},
           isUrl(imgs[0])?el("img",{src:imgs[0],alt:p.name,style:{width:"100%",height:"100%",objectFit:"cover"}}):imgs[0]);
@@ -676,7 +677,7 @@ function buildAdminTab(){
     const fi=el("input",{type:"file",accept:"image/*",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{v.img=ev.target.result;prev.style.display="block";prev.innerHTML="";prev.appendChild(el("img",{src:ev.target.result,style:{width:"100%",maxHeight:"120px",objectFit:"cover",borderRadius:"8px"}}));};r.readAsDataURL(f);}});
     return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"เพิ่มสินค้าใหม่"),
       el("label",{className:"lbl"},"ชื่อสินค้า *"),inp("ชื่อสินค้า","name"),
-      el("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},el("div",null,el("label",{className:"lbl"},"ราคา (₭)*"),inp("89000","price","number")),el("div",null,el("label",{className:"lbl"},"ต้นทุน (₭)"),inp("50000","cost","number"))),
+      el("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},el("div",null,el("label",{className:"lbl"},"ราคา (₭)*"),inp("89000","price","number")),isShop?null:el("div",null,el("label",{className:"lbl"},"ต้นทุน (₭)"),inp("50000","cost","number"))),
       el("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},
         el("div",null,el("label",{className:"lbl"},"หมวดหมู่"),el("select",{className:"sel",onchange:e=>v.cat=e.target.value},...PCATS.map(c=>el("option",{value:c},c)))),
         el("div",null,el("label",{className:"lbl"},"แท็ก"),el("select",{className:"sel",onchange:e=>v.tag=e.target.value},el("option",{value:""},"ไม่มี"),el("option",{value:"sale"},"ขายดี"),el("option",{value:"new"},"ใหม่")))
@@ -1136,6 +1137,10 @@ function showSizeGuide(){
   var btn=document.getElementById('sg-close-btn');if(btn)btn.onclick=function(){ov.remove();};
 }
 
+
+window.addEventListener("beforeunload",function(){
+  if(orders.length>0)orders.forEach(function(o){saveToCloud("orders",o.id,o);});
+});
 // ── INIT ───────────────────────────────────────────────────────────
 // Restore customer session only (admin must login each time)
 try{
