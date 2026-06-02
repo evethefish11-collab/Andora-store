@@ -260,7 +260,7 @@ function buildNav(){
       !user?[el("button",{className:"ibt",style:{color:"#fff"},onclick:()=>showAuth()},"👤"),el("button",{className:"ibt",onclick:()=>showTrack()},"📦")]:
         user.role==="c"?[el("button",{className:"ibt",onclick:()=>{view="profile";render();}},"👤"),el("button",{className:"ibt",onclick:()=>showTrack()},"📦")]:
         (user.role==="admin"||user.role==="shop")?el("button",{className:"ibt",onclick:()=>{view="admin";render();}},"⚙️"):null,
-      el("button",{className:"ibt",onclick:()=>$("cdraw")?.classList.toggle("on")},
+      el("button",{className:"ibt",onclick:()=>($("cdraw")&&$("cdraw").classList.toggle("on"))},
         el("span",null,"🛒",n>0?el("span",{className:"badge"},String(n)):null))
     )
   );
@@ -328,7 +328,7 @@ function buildShop(){
 }
 
 function buildMemberBanner(){
-  if(user?.role==="c")return el("div",{className:"member-banner"},
+  if((user&&user.role)==="c")return el("div",{className:"member-banner"},
     el("div",{style:{width:"44px",height:"44px",borderRadius:"50%",background:"linear-gradient(135deg,#8B6AA8,#7B4FA0)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.4rem",flexShrink:"0"}},"💪"),
     el("div",{style:{flex:"1"}},el("div",{style:{fontSize:".72rem",color:"#3D2870",marginBottom:"2px"}},"สมาชิก TheFish Store"),el("div",{style:{fontSize:"1rem",fontWeight:"700",color:D}},user.name)),
     el("button",{onclick:()=>{view="profile";render();},style:{background:P,color:"#fff",border:"none",padding:"8px 14px",borderRadius:"40px",fontSize:".76rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit",flexShrink:"0"}},"โปรไฟล์ →")
@@ -573,7 +573,7 @@ function renderCo(){
           const finalTotal=gt-discount;
           if(cp){cp.used=(cp.used||0)+1;saveToCloud("coupons",cp.id,cp);window._appliedCoupon=null;}
           const oid=Date.now();
-          const o={id:oid,uid:user?.id,name:coDl.n,phone:coDl.ph,carrier:coDl.ca,branch:coDl.br,items:cart.map(i=>({n:i.name,c:i.co,s:i.si,q:i.q,p:i.dispPrice||i.price,cost:i.cost||0,preorder:i.preorder})),total:finalTotal,discount:discount,coupon:cp?cp.code:"",status:"รอยืนยัน",at:new Date().toLocaleString("th-TH")};
+          const o={id:oid,uid:(user&&user.id),name:coDl.n,phone:coDl.ph,carrier:coDl.ca,branch:coDl.br,items:cart.map(i=>({n:i.name,c:i.co,s:i.si,q:i.q,p:i.dispPrice||i.price,cost:i.cost||0,preorder:i.preorder})),total:finalTotal,discount:discount,coupon:cp?cp.code:"",status:"รอยืนยัน",at:new Date().toLocaleString("th-TH")};
           orders.unshift({...o,slip:coSlip});
           saveToCloud("orders",oid,o);
           const iList=cart.map(i=>i.name+(i.co?" ("+i.co+(i.si?"/"+i.si:"")+")":" ")+"x"+i.q).join(", ");
@@ -659,8 +659,10 @@ function buildAdmin(){
 function buildAdminTab(){
   const isShop=user&&user.role==="shop";
   const TABS=isShop?["📦 สินค้า","➕ เพิ่ม","📊 สต็อก","🚚 ออเดอร์","📈 การเงิน"]:["📦 สินค้า","➕ เพิ่ม","🎁 โปร","📊 สต็อก","👥 สมาชิก","🚚 ออเดอร์","📈 การเงิน","🏷 คูปอง","🏪 ร้านค้า","⚙️ ตั้งค่า"];
+  const shopTabMap={0:0,1:1,2:3,3:5,4:6};
+  const effectiveTab=isShop?(shopTabMap[aTab]!==undefined?shopTabMap[aTab]:aTab):aTab;
   const tabName=TABS[aTab]||"";
-  if(aTab===0){const myProds=isShop?prods.filter(p=>p.shopId===user.shopId):prods;
+  if(effectiveTab===0){const myProds=isShop?prods.filter(p=>p.shopId===user.shopId):prods;
   return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"สินค้า ("+myProds.length+")"),
     ...myProds.map(p=>el("div",{className:"prow"},
       el("div",{style:{width:"36px",height:"36px",borderRadius:"8px",background:p.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.2rem",flexShrink:"0",overflow:"hidden"}},isUrl(p.img)?el("img",{src:p.img,alt:"",style:{width:"100%",height:"100%",objectFit:"cover"}}):p.img),
@@ -670,7 +672,7 @@ function buildAdminTab(){
     ))
   );
   }
-  if(aTab===1){
+  if(effectiveTab===1){
     const v={name:"",cat:"โยคะ",price:"",cost:"",colors:"",sizes:"",tag:"",img:null};
     const inp=(ph,k,t="text")=>{const i=el("input",{className:"inp",placeholder:ph,type:t});i.oninput=e=>v[k]=e.target.value;return i;};
     const prev=el("div",{style:{display:"none",marginBottom:"8px"}});
@@ -720,7 +722,7 @@ function buildAdminTab(){
       }},"➕ เพิ่มสินค้า")
     );
   }
-  if(aTab===2){
+  if(effectiveTab===2){
     const nv={name:"",pct:"",prodIds:[]};
     const inp=(ph,k,t="text")=>{const i=el("input",{className:"inp",placeholder:ph,type:t});i.oninput=e=>nv[k]=e.target.value;return i;};
     const pList=el("div",{style:{display:"grid",gap:"4px",maxHeight:"150px",overflowY:"auto",marginBottom:"8px"}});
@@ -739,7 +741,7 @@ function buildAdminTab(){
       )
     );
   }
-  if(aTab===3||tabName.includes("สต็อก")){
+  if(effectiveTab===3){
     return el("div",null,...prods.map(p=>{
       const cs=p.colors||[],sz=p.sizes||[];
       const combos=cs.flatMap(c=>sz.map(s=>({k:c+"|"+s,c,s,q:(p.stock&&p.stock[c+"|"+s]||0)})));
@@ -757,14 +759,14 @@ function buildAdminTab(){
       );
     }).filter(Boolean));
   }
-  if(aTab===4)return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"สมาชิก ("+users.length+")"),
+  if(effectiveTab===4)return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"สมาชิก ("+users.length+")"),
     ...users.map(u=>el("div",{className:"prow"},
       el("div",{style:{width:"34px",height:"34px",borderRadius:"50%",background:"linear-gradient(135deg,#8B6AA8,#7B4FA0)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".95rem"}},"👤"),
       el("div",{style:{flex:"1"}},el("div",{style:{fontSize:".8rem",fontWeight:"500"}},u.name),el("div",{style:{fontSize:".65rem",color:"#8A7A9E"}},"📞 "+(u.phone||"-")+(u.facebook?" · "+u.facebook:""))),
       el("span",{style:{fontSize:".67rem",background:B,color:P,padding:"3px 8px",borderRadius:"16px",fontWeight:"600"}},"สมาชิก")
     ))
   );
-  if(aTab===5||tabName.includes("ออเดอร์")){
+  if(effectiveTab===5){
     const shopOrders=isShop?orders.filter(o=>(o.items||[]).some(i=>prods.find(p=>p.name===i.n&&p.shopId===user.shopId))):orders;
     const fO=fOrderSt?shopOrders.filter(o=>o.status===fOrderSt):shopOrders;
     const sCnt={};orders.forEach(o=>sCnt[o.status]=(sCnt[o.status]||0)+1);
@@ -805,12 +807,12 @@ function buildAdminTab(){
                 el("div",{style:{flex:"1",minWidth:"0"}},(()=>{const iprod=prods.find(p=>p.name===(i.n||""));const ish=iprod&&iprod.shopId?shops.find(s=>s.id===iprod.shopId):null;return el("div",null,ish?el("span",{style:{fontSize:".6rem",background:"#E8D8F5",color:"#7B4FA0",padding:"1px 5px",borderRadius:"6px",marginRight:"4px"}},(ish.emoji||"🏪")+ish.name):null,el("span",{style:{fontSize:".75rem",color:"#1A1020",fontWeight:"500"}},(i.preorder?"📦 ":"")+(i.n||"")+(i.c?" ("+i.c+(i.s?"/"+i.s:"")+")":" ")+"×"+i.q));})(),el("div",{style:{fontSize:".72rem",color:P,fontWeight:"600"}},"₭"+fmt(i.p*i.q)))
               );})
             ),
-            o.items?.some(i=>i.preorder)?el("span",{style:{fontSize:".67rem",background:"#f0e8ff",color:"#3D2060",padding:"2px 7px",borderRadius:"6px",fontWeight:"600",marginBottom:"4px",display:"inline-block"}},"📦 มีพรีออเดอร์"):null,
+            (o.items&&o.items.some)(i=>i.preorder)?el("span",{style:{fontSize:".67rem",background:"#f0e8ff",color:"#3D2060",padding:"2px 7px",borderRadius:"6px",fontWeight:"600",marginBottom:"4px",display:"inline-block"}},"📦 มีพรีออเดอร์"):null,
             // Price summary
             el("div",{style:{background:"#F3F0F7",borderRadius:"8px",padding:"8px 10px",marginTop:"6px",marginBottom:"6px"}},
               el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:".75rem",color:"#3D2870",marginBottom:"3px"}},
                 el("span",null,"ยอดรวมก่อนส่วนลด"),
-                el("span",null,"₭"+fmt(o.total+(o.discount??0)))
+                el("span",null,"₭"+fmt(o.total+(o.discount||0)))
               ),
               o.discount>0?[
                 el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:".75rem",color:"#27ae60",marginBottom:"4px"}},
@@ -851,7 +853,7 @@ function buildAdminTab(){
       )
     );
   }
-  if(aTab===6||tabName.includes("การเงิน")){
+  if(effectiveTab===6){
     const mMap={};
     orders.filter(o=>o.status!=="ยกเลิก").forEach(o=>{const d=new Date(o.id);const k=d.getFullYear()+"-"+(String(d.getMonth()+1).padStart(2,"0"));const lb=d.toLocaleDateString("th-TH",{year:"numeric",month:"long"});if(!mMap[k])mMap[k]={label:lb,revenue:0,profit:0,orders:0};mMap[k].revenue+=o.total;const c=(o.items||[]).reduce((s,i)=>s+(i.cost||0)*i.q,0);mMap[k].profit+=o.total-c;mMap[k].orders+=1;});
     const months=Object.keys(mMap).sort().reverse();
@@ -872,7 +874,7 @@ function buildAdminTab(){
       )
     );
   }
-  if(aTab===7){
+  if(effectiveTab===7){
     const nc={code:"",pct:"",limit:""};
     const cinp=(ph,k,t="text")=>{const i=el("input",{className:"inp",placeholder:ph,type:t});i.oninput=e=>nc[k]=e.target.value.toUpperCase();return i;};
     return el("div",null,
@@ -910,7 +912,7 @@ function buildAdminTab(){
       )
     );
   }
-  if(aTab===8){
+  if(effectiveTab===8){
     if(!window._nsh)window._nsh={name:"",username:"",password:"",commission:10,color:"#7B4FA0",emoji:"🏪"};
     const nsh=window._nsh;
     const sinp=(ph,k,typ="text")=>{
@@ -998,7 +1000,7 @@ function buildAdminTab(){
       )
     );
   }
-  if(aTab===9){
+  if(effectiveTab===9){
     const prev=el("div",null,qrImg?el("img",{src:qrImg,style:{width:"100%",maxWidth:"280px",borderRadius:"11px",marginBottom:"8px",border:"2px solid "+B,display:"block"},alt:"QR"}):null);
     return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"⚙️ ตั้งค่าร้าน"),el("label",{className:"lbl"},"💳 QR Code ชำระเงิน"),prev,
       el("label",{className:"uplbl"},qrImg?"🔄 เปลี่ยน QR":"📷 อัปโหลด QR Code",el("input",{type:"file",accept:"image/*",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{qrImg=ev.target.result;db.collection("settings").doc("main").set({qrImg:qrImg}).catch(e=>e);prev.innerHTML="";prev.appendChild(el("img",{src:ev.target.result,style:{width:"100%",maxWidth:"280px",borderRadius:"11px",border:"2px solid "+B},alt:"QR"}));};r.readAsDataURL(f);}})),
@@ -1097,7 +1099,7 @@ function showEditProd(p){
     el("button",{className:"btn btn-p",onclick:()=>{
       const cs=fm.cs.split(",").map(s=>s.trim()).filter(Boolean);
       const sz=fm.ss.split(",").map(s=>s.trim()).filter(Boolean);
-      const newSt={};cs.forEach(c=>sz.forEach(s=>{newSt[c+"|"+s]=p.stock?.[c+"|"+s]??0;}));
+      const newSt={};cs.forEach(c=>sz.forEach(s=>{newSt[c+"|"+s]=(p.stock?p.stock[c+"|"+s]||0:0)||0;}));
       prods=prods.map(x=>x.id===p.id?{...x,...fm,price:Number(fm.price),cost:Number(fm.cost)||0,colors:cs,sizes:sz,stock:newSt,imgs:fm.imgs||x.imgs||[x.img]}:x);
       const updated=prods.find(x=>x.id===p.id);
       try{localStorage.setItem("img_"+p.id,JSON.stringify({img:updated.img,imgs:updated.imgs}));}catch(e){}
@@ -1109,7 +1111,7 @@ function showEditProd(p){
 
 // ── PROFILE ────────────────────────────────────────────────────────
 function buildProfile(){
-  const myO=orders.filter(o=>o.uid===user?.id);
+  const myO=orders.filter(o=>o.uid===(user&&user.id));
   return el("div",{style:{padding:"14px 14px 40px",maxWidth:"460px",margin:"0 auto"}},
     el("div",{style:{background:"#fff",borderRadius:"14px",padding:"18px 15px",marginBottom:"11px",boxShadow:"0 2px 7px rgba(59,32,96,.05)"}},
       el("div",{style:{width:"54px",height:"54px",borderRadius:"50%",background:"linear-gradient(135deg,#8B6AA8,#7B4FA0)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.5rem",marginBottom:"10px"}},"💪"),
