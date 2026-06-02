@@ -415,7 +415,7 @@ function renderCo(){
       el("button",{className:"mcl",onclick:()=>{closeOv();render();}},"✕"),
       el("p",{style:{fontSize:"1.1rem",fontWeight:"700",marginBottom:"8px"}},"📎 สลิป & ข้อมูลจัดส่ง"),
       coSlip?el("img",{src:coSlip,style:{width:"100%",borderRadius:"10px",marginBottom:"8px",maxHeight:"120px",objectFit:"cover"},alt:"slip"}):null,
-      el("label",{className:"uplbl",style:{borderColor:coSlip?"#27ae60":"#e74c3c",color:coSlip?"#27ae60":"#e74c3c"}},coSlip?"✅ สลิปอัปโหลดแล้ว":"📷 อัปโหลดสลิป * (บังคับ)",el("input",{type:"file",accept:"image/*",capture:"environment",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{coSlip=ev.target.result;renderCo();};r.readAsDataURL(f);}})),
+      el("label",{className:"uplbl",style:{borderColor:coSlip?"#27ae60":"#e74c3c",color:coSlip?"#27ae60":"#e74c3c"}},coSlip?"✅ สลิปอัปโหลดแล้ว":"📷 อัปโหลดสลิป * (บังคับ)",el("input",{type:"file",accept:"image/*",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{coSlip=ev.target.result;renderCo();};r.readAsDataURL(f);}})),
       el("label",{className:"lbl"},"ชื่อผู้รับ *"),inp("ชื่อ-นามสกุล","n"),
       el("label",{className:"lbl"},"เบอร์โทร *"),inp("เบอร์โทร","ph","tel"),
       el("label",{className:"lbl",style:{marginBottom:"6px"}},"บริษัทจัดส่ง *"),
@@ -490,7 +490,7 @@ function buildAdminTab(){
     const v={name:"",cat:"โยคะ",price:"",cost:"",colors:"",sizes:"",tag:"",img:null};
     const inp=(ph,k,t="text")=>{const i=el("input",{className:"inp",placeholder:ph,type:t});i.oninput=e=>v[k]=e.target.value;return i;};
     const prev=el("div",{style:{display:"none",marginBottom:"8px"}});
-    const fi=el("input",{type:"file",accept:"image/*",capture:"environment",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{v.img=ev.target.result;prev.style.display="block";prev.innerHTML="";prev.appendChild(el("img",{src:ev.target.result,style:{width:"100%",maxHeight:"120px",objectFit:"cover",borderRadius:"8px"}}));};r.readAsDataURL(f);}});
+    const fi=el("input",{type:"file",accept:"image/*",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{v.img=ev.target.result;prev.style.display="block";prev.innerHTML="";prev.appendChild(el("img",{src:ev.target.result,style:{width:"100%",maxHeight:"120px",objectFit:"cover",borderRadius:"8px"}}));};r.readAsDataURL(f);}});
     return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"เพิ่มสินค้าใหม่"),
       el("label",{className:"lbl"},"ชื่อสินค้า *"),inp("ชื่อสินค้า","name"),
       el("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},el("div",null,el("label",{className:"lbl"},"ราคา (₭)*"),inp("89000","price","number")),el("div",null,el("label",{className:"lbl"},"ต้นทุน (₭)"),inp("50000","cost","number"))),
