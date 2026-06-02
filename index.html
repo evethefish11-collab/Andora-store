@@ -2,6 +2,11 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#391B41">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ANDORA">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>ANDORA</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -538,6 +543,79 @@ function exportMonthlyExcel(){
   XLSX.writeFile(wb,fileName);
   toast("ดาวน์โหลด "+fileName+" แล้ว ✓");
 }
+
+// ── PWA INSTALL BANNER ────────────────────────────────────────────
+function showInstallBanner(){
+  // Don't show if already installed or dismissed
+  if(localStorage.getItem("pwa_dismissed"))return;
+  if(window.matchMedia("(display-mode: standalone)").matches)return;
+
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid=/android/i.test(navigator.userAgent);
+  if(!isIOS&&!isAndroid)return;
+
+  const banner=document.createElement("div");
+  banner.id="install-banner";
+  banner.style.cssText="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#391B41;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 -4px 20px rgba(45,17,85,.5);animation:slideUp .3s ease";
+
+  const icon=document.createElement("img");
+  icon.style.cssText="width:44px;height:44px;border-radius:10px;flex-shrink:0";
+  // Use logo from nav
+  const navLogo=document.querySelector(".logo img");
+  if(navLogo)icon.src=navLogo.src;
+
+  const txt=document.createElement("div");
+  txt.style.cssText="flex:1";
+  txt.innerHTML=isIOS?
+    "<div style='font-weight:700;font-size:.88rem'>ติดตั้ง ANDORA บนมือถือ</div>"+
+    "<div style='font-size:.72rem;opacity:.8;margin-top:2px'>กด <b>Share</b> แล้วเลือก <b>เพิ่มไปที่หน้าจอโฮม</b> 📲</div>":
+    "<div style='font-weight:700;font-size:.88rem'>ติดตั้ง ANDORA บนมือถือ</div>"+
+    "<div style='font-size:.72rem;opacity:.8;margin-top:2px'>เพื่อเปิดได้เร็วขึ้นโดยไม่ต้องพิมพ์ URL 📲</div>";
+
+  // Install button (Android only - iOS uses Share)
+  if(isAndroid&&window._pwaPrompt){
+    const btn=document.createElement("button");
+    btn.textContent="ติดตั้ง";
+    btn.style.cssText="background:#fff;color:#391B41;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:.82rem;cursor:pointer;flex-shrink:0;font-family:inherit";
+    btn.onclick=function(){
+      window._pwaPrompt.prompt();
+      banner.remove();
+    };
+    banner.appendChild(icon);
+    banner.appendChild(txt);
+    banner.appendChild(btn);
+  } else {
+    banner.appendChild(icon);
+    banner.appendChild(txt);
+  }
+
+  // Close button
+  const close=document.createElement("button");
+  close.textContent="✕";
+  close.style.cssText="background:none;border:none;color:rgba(255,255,255,.7);font-size:1rem;cursor:pointer;padding:4px;flex-shrink:0";
+  close.onclick=function(){
+    banner.remove();
+    localStorage.setItem("pwa_dismissed","1");
+  };
+  banner.appendChild(close);
+
+  // Add slide-up animation
+  if(!document.getElementById("pwa-style")){
+    const s=document.createElement("style");
+    s.id="pwa-style";
+    s.textContent="@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}";
+    document.head.appendChild(s);
+  }
+
+  document.body.appendChild(banner);
+}
+
+// Show banner after 3 seconds on first visit
+setTimeout(function(){
+  if(!window.matchMedia("(display-mode: standalone)").matches){
+    showInstallBanner();
+  }
+}, 3000);
 
 // ── RENDER ─────────────────────────────────────────────────────────
 function render(){
@@ -1491,6 +1569,17 @@ function showSizeGuide(){
   var btn=document.getElementById('sg-close-btn');if(btn)btn.onclick=function(){ov.remove();};
 }
 
+// ── PWA Install Prompt
+window._pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  window._pwaPrompt = e;
+  render(); // Show install button
+});
+window.addEventListener('appinstalled', function(){
+  window._pwaPrompt = null;
+  toast("ติดตั้ง ANDORA แล้ว ✓");
+});
 // ── INIT ───────────────────────────────────────────────────────────
 render();
 loadFromCloud();
