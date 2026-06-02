@@ -373,9 +373,9 @@ function showAuth(mode="login"){
       aErr?el("div",{style:{color:P,fontSize:".77rem",marginBottom:"8px",padding:"7px 10px",background:"rgba(123,79,160,.08)",borderRadius:"8px"}},"⚠️ "+aErr):null,
       ...fields,
       el("button",{className:"btn btn-p",onclick:()=>{
-        if(aType==="a"){if(aF.u===ADM.u&&aF.p===ADM.p){user={role:"admin",name:"Admin"};closeOv();view="admin";render();toast("ยินดีต้อนรับ Admin 👋");}else{aErr="ข้อมูลไม่ถูกต้อง";drawAuth();}return;}
-        if(aMode==="login"){const u=users.find(x=>x.username===aF.u&&x.password===aF.p);if(u){user={role:"c",...u};closeOv();render();toast("ยินดีต้อนรับ "+u.name);}else{aErr="ข้อมูลไม่ถูกต้อง";drawAuth();}}
-        else{if(!aF.u||!aF.p||!aF.n||!aF.ph){aErr="กรุณากรอกข้อมูลให้ครบ";drawAuth();return;}if(aF.p!==aF.c2){aErr="รหัสผ่านไม่ตรงกัน";drawAuth();return;}if(users.find(x=>x.username===aF.u)){aErr="ชื่อผู้ใช้นี้มีอยู่แล้ว";drawAuth();return;}const nu={id:Date.now(),username:aF.u,password:aF.p,name:aF.n,phone:aF.ph,facebook:aF.fb};users.push(nu);saveToCloud("users",nu.id,nu);user={role:"c",...nu};closeOv();render();toast("สมัครสมาชิกสำเร็จ 🎉");}
+        if(aType==="a"){if(aF.u===ADM.u&&aF.p===ADM.p){user={role:"admin",name:"Admin"};localStorage.setItem("tf_user",JSON.stringify(user));closeOv();view="admin";render();toast("ยินดีต้อนรับ Admin 👋");}else{aErr="ข้อมูลไม่ถูกต้อง";drawAuth();}return;}
+        if(aMode==="login"){const u=users.find(x=>x.username===aF.u&&x.password===aF.p);if(u){user={role:"c",...u};localStorage.setItem("tf_user",JSON.stringify(user));closeOv();render();toast("ยินดีต้อนรับ "+u.name);}else{aErr="ข้อมูลไม่ถูกต้อง";drawAuth();}}
+        else{if(!aF.u||!aF.p||!aF.n||!aF.ph){aErr="กรุณากรอกข้อมูลให้ครบ";drawAuth();return;}if(aF.p!==aF.c2){aErr="รหัสผ่านไม่ตรงกัน";drawAuth();return;}if(users.find(x=>x.username===aF.u)){aErr="ชื่อผู้ใช้นี้มีอยู่แล้ว";drawAuth();return;}const nu={id:Date.now(),username:aF.u,password:aF.p,name:aF.n,phone:aF.ph,facebook:aF.fb};users.push(nu);saveToCloud("users",nu.id,nu);user={role:"c",...nu};localStorage.setItem("tf_user",JSON.stringify(user));closeOv();render();toast("สมัครสมาชิกสำเร็จ 🎉");}
       }},aType==="a"?"เข้าสู่ระบบ":aMode==="login"?"เข้าสู่ระบบ":"สมัครสมาชิก")
     ));
   };
@@ -655,7 +655,7 @@ function buildProfile(){
     ),
     el("div",{style:{background:"#fff",borderRadius:"14px",padding:"16px 15px",textAlign:"center"}},
       el("div",{style:{fontSize:".78rem",color:"#8A7A9E",marginBottom:"10px"}},"ออเดอร์: ",el("b",{style:{color:P}},myO.length+" รายการ")),
-      el("button",{className:"btn btn-d",onclick:()=>{user=null;view="shop";render();toast("ออกจากระบบแล้ว");}},"ออกจากระบบ")
+      el("button",{className:"btn btn-d",onclick:()=>{user=null;localStorage.removeItem("tf_user");view="shop";render();toast("ออกจากระบบแล้ว");}},"ออกจากระบบ")
     )
   );
 }
@@ -675,6 +675,14 @@ function showSizeGuide(){
 }
 
 // ── INIT ───────────────────────────────────────────────────────────
+// Restore session
+try{
+  const savedUser=localStorage.getItem('tf_user');
+  if(savedUser){
+    user=JSON.parse(savedUser);
+    if(user&&user.role==="admin")view="admin";
+  }
+}catch(e){}
 render();
 loadFromCloud();
 </script>
