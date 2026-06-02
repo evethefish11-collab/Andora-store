@@ -155,9 +155,9 @@ function el(tag,attrs,...children){
   return e;
 }
 function toast(msg){
-  let t=$("toast");
-  if(!t){t=el("div",{id:"toast",className:"toast"});document.body.appendChild(t);}
-  t.textContent=msg;t.classList.add("on");
+  let t=$("toast(");
+  if(!t){t=el(")div",{id:"toast(",className:")toast("});document.body.appendChild(t);}
+  t.textContent=msg;t.classList.add(")on");
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("on"),2400);
 }
 function closeOv(){const ov=$("ov");if(ov)ov.remove();}
@@ -174,6 +174,7 @@ function getPromoMap(){
   }));
   return m;
 }
+
 
 // ── RENDER ─────────────────────────────────────────────────────────
 function render(){
@@ -195,8 +196,9 @@ function buildNav(){
   const n=cart.reduce((s,i)=>s+i.q,0);
   return el("nav",{className:"nav"},
     el("button",{className:"logo",onclick:()=>{view="shop";render();}},"TheFish Store"),
+    
     el("div",{style:{display:"flex",gap:"6px",alignItems:"center"}},
-      !user?el("button",{className:"ibt",onclick:()=>showAuth()},"👤"):
+      !user?[el("button",{className:"ibt",onclick:()=>showAuth()},"👤"),el("button",{className:"ibt",onclick:()=>showTrack()},"📦")]:
         user.role==="c"?[el("button",{className:"ibt",onclick:()=>{view="profile";render();}},"👤"),el("button",{className:"ibt",onclick:()=>showTrack()},"📦")]:
         el("button",{className:"ibt",onclick:()=>{view="admin";render();}},"⚙️"),
       el("button",{className:"ibt",onclick:()=>$("cdraw")?.classList.toggle("on")},
@@ -250,9 +252,9 @@ function buildShop(){
     el("div",{style:{margin:"16px 14px 0",background:D,borderRadius:"14px",padding:"20px 16px"}},
       el("div",{style:{fontSize:".56rem",letterSpacing:".14em",textTransform:"uppercase",color:"#B89AC8",marginBottom:"8px"}},"วิธีสั่งซื้อ"),
       el("div",{style:{display:"grid",gap:"6px",marginBottom:"14px"}},
-        ["เลือกสินค้า → เลือกสีและขนาด","กด 🛒 เพิ่มลงตะกร้า","กดชำระเงิน → สแกน QR","ส่งสลิป + ข้อมูลจัดส่ง","⚡ พร้อมส่ง: รับสินค้า 1-2 วัน | 📦 พรีออเดอร์: 10-15 วัน"].map((s,i)=>el("div",{style:{display:"flex",gap:"8px",alignItems:"center"}},
+        ...["เลือกสินค้า → เลือกสีและขนาด","กด 🛒 เพิ่มลงตะกร้า","กดชำระเงิน → สแกน QR","ส่งสลิป + ข้อมูลจัดส่ง","⚡ พร้อมส่ง: รับสินค้า 1-2 วัน | 📦 พรีออเดอร์: 10-15 วัน","🔄 ถ้าไม่พอใจ คืนสินค้าและรับเงินคืนได้ภายใน 3 วัน"].map((s,i)=>el("div",{style:{display:"flex",gap:"8px",alignItems:"center"}},
           el("span",{style:{width:"20px",height:"20px",borderRadius:"50%",background:P,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".65rem",fontWeight:"700",flexShrink:"0"}},String(i+1)),
-          el("span",{style:{fontSize:".8rem",color:"rgba(243,240,247,.8)"}},s)))
+          el("span",{style:{fontSize:".8rem",color:"rgba(243,240,247,.8)"}},s))),
       ),
       el("button",{onclick:()=>showSizeGuide(),style:{display:"flex",alignItems:"center",justifyContent:"center",gap:"7px",width:"100%",padding:"10px",borderRadius:"10px",background:"rgba(255,255,255,.1)",color:"#fff",border:"1px solid rgba(255,255,255,.2)",fontSize:".82rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit",marginBottom:"8px"}},"📏 ดูตารางขนาดสินค้า"),
       el("a",{href:"https://wa.me/8562059822646",target:"_blank",style:{display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",width:"100%",padding:"11px",borderRadius:"10px",background:"#25D366",color:"#fff",textDecoration:"none",fontWeight:"700",fontSize:".85rem",fontFamily:"sans-serif"}},"💬 ติดต่อแอดมิน WhatsApp")
@@ -271,7 +273,10 @@ function buildMemberBanner(){
     el("button",{onclick:()=>{view="profile";render();},style:{background:P,color:"#fff",border:"none",padding:"8px 14px",borderRadius:"40px",fontSize:".76rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit",flexShrink:"0"}},"โปรไฟล์ →")
   );
   return el("div",{className:"member-banner"},
-    el("div",{style:{flex:"1"}},el("div",{style:{fontSize:"1rem",fontWeight:"900",color:D,marginBottom:"3px"}},"รับ ",el("em",{style:{color:P}},"โปรพิเศษ")," ก่อนใคร"),el("div",{style:{fontSize:".82rem",color:"#5a4080"}},"สมัครสมาชิกรับส่วนลด 15%")),
+    el("div",{style:{flex:"1"}},
+      el("div",{style:{fontSize:"1rem",fontWeight:"900",color:D,marginBottom:"3px"}},"รับ ",el("em",{style:{color:P}},"โปรพิเศษ")," ก่อนใคร"),
+      el("div",{style:{fontSize:".82rem",color:"#5a4080"}},"สมัครสมาชิกรับส่วนลด 15%")
+    ),
     el("button",{onclick:()=>showAuth("register"),style:{background:P,color:"#fff",border:"none",padding:"9px 16px",borderRadius:"40px",fontSize:".8rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit",flexShrink:"0"}},"สมัคร →")
   );
 }
@@ -305,7 +310,7 @@ function showProduct(p){
   selColor="";selSize="";
   const PM=getPromoMap(),promo=PM[p.id];
   const cs=p.colors||[],sz=p.sizes||[];
-  const gQ=(c,s)=>p.stock?(p.stock[c+"|"+s]??0):0;
+  const gQ=(c,s)=>p.stock?(p.stock[c+"|"+s]!=null?p.stock[c+"|"+s]:0):0;
   const draw=()=>{
     const qN=selColor&&selSize?gQ(selColor,selSize):null;
     const dp=promo?promo.price:p.price;
@@ -345,7 +350,7 @@ function showProduct(p){
       el("div",{style:{fontSize:"1.1rem",fontWeight:"700",marginBottom:"3px"}},p.name),
       el("div",{style:{marginBottom:"12px",display:"flex",gap:"8px",alignItems:"center"}},el("span",{style:{fontSize:"1.2rem",color:promo?"#ff6b35":P,fontWeight:"700"}},"₭"+fmt(dp)),promo?[el("span",{style:{fontSize:".78rem",color:"#8A7A9E",textDecoration:"line-through"}},"₭"+fmt(p.price)),el("span",{style:{fontSize:".7rem",background:"#ff6b35",color:"#fff",padding:"2px 8px",borderRadius:"8px",fontWeight:"700"}},"🎁 -"+promo.pct+"%")]:null),
       cs.length>0?[el("div",{style:{fontSize:".68rem",fontWeight:"700",textTransform:"uppercase",color:"#3B2060",marginBottom:"6px"}},"🎨 เลือกสี"),el("div",{style:{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"12px"}},cs.map(c=>el("button",{style:{padding:"6px 13px",borderRadius:"40px",border:"1.5px solid "+(selColor===c?P:"#C4A8DC"),background:selColor===c?P:"#fff",color:selColor===c?"#fff":"#1A1020",fontSize:".74rem",cursor:"pointer",fontFamily:"inherit"},onclick:()=>{selColor=c;selSize="";draw();}},c)))]:null,
-      selColor&&sz.length>0?[el("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"6px",marginTop:"4px"}},el("div",{style:{fontSize:".68rem",fontWeight:"700",textTransform:"uppercase",color:"#3B2060"}},"📏 ขนาด — จำนวนที่มี"),el("button",{style:{fontSize:".7rem",color:P,background:"none",border:"1px solid #C4A8DC",borderRadius:"6px",padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"},onclick:e=>{e.stopPropagation();showSizeGuide();}},"ดูตารางขนาด")),el("div",{style:{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"12px"}},sz.map(s=>{const q=gQ(selColor,s);return el("button",{style:{padding:"7px 11px",borderRadius:"9px",border:"1.5px solid "+(selSize===s?P:"#C4A8DC"),background:selSize===s?P:"#fff",cursor:"pointer",display:"flex",gap:"4px",alignItems:"center",fontFamily:"inherit"},onclick:()=>{selSize=s;draw();}},el("span",{style:{fontSize:".77rem",fontWeight:"700",color:selSize===s?"#fff":"#1A1020"}},s),q>0?el("span",{style:{fontSize:".64rem",color:selSize===s?"#c8f5d0":"#1a7a3a",fontWeight:"600"}},String(q)):null);}))]:null,
+      selColor&&sz.length>0?[el("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"6px",marginTop:"4px"}},el("div",{style:{fontSize:".68rem",fontWeight:"700",textTransform:"uppercase",color:"#3B2060"}},"📏 ขนาด — จำนวนที่มี"),el("button",{style:{fontSize:".7rem",color:P,background:"none",border:"1px solid #C4A8DC",borderRadius:"6px",padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"},onclick:e=>{e.stopPropagation();showSizeGuide();}},"📏 ดูตารางขนาดสินค้า")),el("div",{style:{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"12px"}},sz.map(s=>{const q=gQ(selColor,s);return el("button",{style:{padding:"7px 11px",borderRadius:"9px",border:"1.5px solid "+(selSize===s?P:"#C4A8DC"),background:selSize===s?P:"#fff",cursor:"pointer",display:"flex",gap:"4px",alignItems:"center",fontFamily:"inherit"},onclick:()=>{selSize=s;draw();}},el("span",{style:{fontSize:".77rem",fontWeight:"700",color:selSize===s?"#fff":"#1A1020"}},s),q>0?el("span",{style:{fontSize:".64rem",color:selSize===s?"#c8f5d0":"#1a7a3a",fontWeight:"600"}},String(q)):null);}))]:null,
       qN!==null?el("div",{style:{padding:"8px 11px",borderRadius:"10px",background:qN>0?"rgba(37,211,102,.08)":"rgba(123,79,160,.08)",border:"1px solid "+(qN>0?"rgba(37,211,102,.25)":"rgba(123,79,160,.2)"),display:"flex",alignItems:"center",gap:"8px",marginBottom:"8px"}},el("span",null,qN>0?"⚡":"📦"),qN>0?el("div",null,el("div",{style:{fontSize:".8rem",color:"#1a7a3a",fontWeight:"700"}},"พร้อมส่งภายใน 24 ชั่วโมง"),el("div",{style:{fontSize:".7rem",color:"#1a7a3a"}},"เหลือ "+qN+" ชิ้น")):el("div",null,el("div",{style:{fontSize:".8rem",color:"#5a3d8a",fontWeight:"700"}},"สั่งพรีออเดอร์ได้"),el("div",{style:{fontSize:".7rem",color:"#5a4080"}},"จัดส่ง 10-15 วัน"))):null,
       el("button",{className:"btn btn-p",style:{marginTop:"8px"},onclick:()=>{
         if(cs.length>0&&!selColor){toast("กรุณาเลือกสีก่อน");return;}
@@ -438,12 +443,7 @@ function renderCo(){
           el("div",{style:{display:"flex",justifyContent:"space-between",fontWeight:"800",fontSize:".93rem",color:P}},el("span",null,"รวมทั้งหมด"),el("span",null,"₭"+fmt(gt)))
         )
       ),
-      el("div",{style:{textAlign:"center",marginBottom:"10px"}},
-        el("div",{style:{fontSize:".8rem",fontWeight:"700",color:"#2D1060",marginBottom:"6px"}},"สแกน QR เพื่อชำระเงิน"),
-        qrImg?el("img",{src:qrImg,style:{width:"100%",maxWidth:"320px",borderRadius:"11px",border:"2px solid "+B,display:"block",margin:"0 auto"},alt:"QR"}):el("div",{style:{width:"160px",height:"160px",background:C,borderRadius:"11px",margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",color:"#8A7A9E",fontSize:".77rem",border:"2px dashed #C4A8DC",textAlign:"center",padding:"10px"}},"แอดมินยังไม่ได้อัปโหลด QR"),
-        el("div",{style:{fontSize:".68rem",color:"#8A7A9E",marginTop:"4px"}},"PAPHATSONE SITTHIVONG · BCEL LAPNet")
-      ),
-      // Coupon section
+      // Coupon section (moved above QR)
       (()=>{
         let appliedCp=window._appliedCoupon||null;
         const discount=appliedCp?Math.round(gt*appliedCp.pct/100):0;
@@ -480,6 +480,11 @@ function renderCo(){
           )
         );
       })(),
+      el("div",{style:{textAlign:"center",marginBottom:"10px"}},
+        el("div",{style:{fontSize:".8rem",fontWeight:"700",color:"#2D1060",marginBottom:"6px"}},"สแกน QR เพื่อชำระเงิน"),
+        qrImg?el("img",{src:qrImg,style:{width:"100%",maxWidth:"320px",borderRadius:"11px",border:"2px solid "+B,display:"block",margin:"0 auto"},alt:"QR"}):el("div",{style:{width:"160px",height:"160px",background:C,borderRadius:"11px",margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"center",color:"#8A7A9E",fontSize:".77rem",border:"2px dashed #C4A8DC",textAlign:"center",padding:"10px"}},"แอดมินยังไม่ได้อัปโหลด QR"),
+        el("div",{style:{fontSize:".68rem",color:"#8A7A9E",marginTop:"4px"}},"PAPHATSONE SITTHIVONG · BCEL LAPNet")
+      ),
       el("button",{className:"btn btn-p",onclick:()=>{coStep=2;renderCo();}},"ส่งสลิปและข้อมูลจัดส่ง →")
     );
   } else if(coStep===2){
@@ -504,7 +509,7 @@ function renderCo(){
           const finalTotal=gt-discount;
           if(cp){cp.used=(cp.used||0)+1;saveToCloud("coupons",cp.id,cp);window._appliedCoupon=null;}
           const oid=Date.now();
-          const o={id:oid,uid:user?.id,name:coDl.n,phone:coDl.ph,carrier:coDl.ca,branch:coDl.br,items:cart.map(i=>({n:i.name,c:i.co,s:i.si,q:i.q,p:i.dispPrice||i.price,cost:i.cost||0,preorder:i.preorder})),total:finalTotal,discount:discount,coupon:cp?cp.code:"",status:"รอการชำระเงิน",at:new Date().toLocaleString("th-TH")};
+          const o={id:oid,uid:user?.id,name:coDl.n,phone:coDl.ph,carrier:coDl.ca,branch:coDl.br,items:cart.map(i=>({n:i.name,c:i.co,s:i.si,q:i.q,p:i.dispPrice||i.price,cost:i.cost||0,preorder:i.preorder})),total:finalTotal,discount:discount,coupon:cp?cp.code:"",status:"รอยืนยัน",at:new Date().toLocaleString("th-TH")};
           orders.unshift({...o,slip:coSlip});
           saveToCloud("orders",oid,o);
           const iList=cart.map(i=>i.name+(i.co?" ("+i.co+(i.si?"/"+i.si:"")+")":" ")+"x"+i.q).join(", ");
@@ -513,7 +518,8 @@ function renderCo(){
           const pop=document.createElement("div");
           pop.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px";
           const box=document.createElement("div");box.style.cssText="background:#fff;border-radius:16px;padding:24px 20px;max-width:340px;width:100%;text-align:center";
-          box.innerHTML="<p style='font-size:1.5rem;margin-bottom:10px'>✅</p><p style='font-weight:700;font-size:1rem;color:#1A1020;margin-bottom:10px'>ออเดอร์สำเร็จ!</p><p style='font-size:.84rem;color:#5a4080;line-height:1.65;margin-bottom:18px'>กดปุ่มด้านล่างเพื่อแจ้งแอดมินทาง WhatsApp พร้อมแนบ <b>รูปสลิปการโอนเงิน</b> ด้วยค่ะ</p>";
+          const ordNum=String(oid).slice(-6);
+          box.innerHTML="<p style='font-size:1.5rem;margin-bottom:10px'>✅</p><p style='font-weight:700;font-size:1rem;color:#1A1020;margin-bottom:8px'>สั่งซื้อสำเร็จ!</p><div style='background:#F3F0F7;border-radius:10px;padding:10px 14px;margin-bottom:10px;text-align:left'><p style='font-size:.75rem;color:#8A7A9E;margin-bottom:2px'>เลขที่ออเดอร์ของคุณ</p><p style='font-size:1.3rem;font-weight:900;color:#7B4FA0;letter-spacing:2px'>#"+ordNum+"</p><p style='font-size:.75rem;color:#5a4080;margin-top:4px'>📦 สถานะ: รอยืนยัน</p><p style='font-size:.72rem;color:#8A7A9E;margin-top:2px'>กด 📦 ในหน้าร้านเพื่อติดตามออเดอร์</p></div><p style='font-size:.84rem;color:#5a4080;line-height:1.55;margin-bottom:14px'>กดปุ่มด้านล่างเพื่อแจ้งแอดมินทาง WhatsApp พร้อมแนบ <b>รูปสลิปการโอนเงิน</b> ด้วยค่ะ</p>";
           const bWa=document.createElement("button");bWa.textContent="ส่งข้อความแจ้งแอดมิน WhatsApp";bWa.style.cssText="background:#25D366;color:#fff;border:none;width:100%;padding:12px;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;display:block";bWa.onclick=()=>{window.open("https://wa.me/8562059822646?text="+encodeURIComponent(waMsg),"_blank");pop.remove();};
           const bSk=document.createElement("button");bSk.textContent="ข้าม (แจ้งภายหลัง)";bSk.style.cssText="background:none;border:none;color:#8A7A9E;font-size:.82rem;cursor:pointer;font-family:inherit";bSk.onclick=()=>pop.remove();
           box.appendChild(bWa);box.appendChild(bSk);pop.appendChild(box);document.body.appendChild(pop);
@@ -528,18 +534,49 @@ function renderCo(){
 
 // ── TRACK ──────────────────────────────────────────────────────────
 function showTrack(){
-  const myO=orders.filter(o=>o.uid===user?.id);
+  // Allow tracking by order number without login
+  const drawTrack=(myO,searchNum)=>{
   const SC={"รอการชำระเงิน":"#e67e22","รอยืนยัน":"#f0a500","ยืนยันแล้ว":P,"กำลังจัดส่งมาที่ร้าน":"#8e44ad","กำลังจัดส่งให้ลูกค้า":"#2980b9","จัดส่งแล้ว":"#27ae60","ยกเลิก":"#c00"};
+  const searchInp=el("input",{className:"inp",placeholder:"ค้นหาด้วยเลขออเดอร์ เช่น 400496"});
+  const doSearch=()=>{
+    const v=searchInp.value.trim().replace("#","");
+    resDiv.innerHTML="";
+    if(v.length>=4){
+      const found=orders.filter(o=>String(o.id).slice(-6)===v);
+      if(found.length===0){
+        resDiv.appendChild(el("p",{style:{textAlign:"center",color:"#8A7A9E",padding:"16px 0"}},"ไม่พบออเดอร์ #"+v));
+      } else {
+        found.forEach(o=>resDiv.appendChild(buildOrderRow(o,SC)));
+      }
+    } else {
+      myO.forEach(o=>resDiv.appendChild(buildOrderRow(o,SC)));
+    }
+  };
+  searchInp.oninput=doSearch;
+  searchInp.onkeydown=e=>{if(e.key==="Enter")doSearch();};
+  const buildOrderRow=(o,SC)=>el("div",{style:{background:C,borderRadius:"10px",padding:"10px 11px",marginBottom:"7px"}},
+    el("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"4px"}},
+      el("b",{style:{fontSize:".8rem"}},"#"+String(o.id).slice(-6)),
+      el("span",{style:{padding:"3px 9px",borderRadius:"18px",background:SC[o.status]||"#8A7A9E",color:"#fff",fontSize:".68rem",fontWeight:"700"}},o.status)
+    ),
+    el("div",{style:{fontSize:".72rem",color:"#8A7A9E",marginBottom:"2px"}},o.name+" · "+o.carrier+" · "+o.branch),
+    el("b",{style:{color:P,fontSize:".77rem"}},"₭"+fmt(o.total))
+  );
+  const resDiv=el("div",null,...myO.map(o=>buildOrderRow(o,SC)));
   showOv(el("div",{className:"mod",onclick:e=>e.stopPropagation()},
     el("button",{className:"mcl",onclick:closeOv},"✕"),
-    el("p",{style:{fontWeight:"900",fontSize:"1.05rem",textAlign:"center",margin:"4px 0 12px"}},"📦 ติดตามสินค้า"),
-    myO.length===0?el("p",{style:{textAlign:"center",color:"#8A7A9E",padding:"16px 0"}},"ยังไม่มีออเดอร์"):
-    el("div",null,...myO.map(o=>el("div",{style:{background:C,borderRadius:"10px",padding:"10px 11px",marginBottom:"7px"}},
-      el("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"4px"}},el("b",{style:{fontSize:".8rem"}},"#"+String(o.id).slice(-6)),el("span",{style:{padding:"3px 9px",borderRadius:"18px",background:SC[o.status]||"#8A7A9E",color:"#fff",fontSize:".68rem",fontWeight:"700"}},o.status)),
-      el("div",{style:{display:"flex",justifyContent:"space-between"}},el("span",{style:{fontSize:".7rem",color:"#8A7A9E"}},o.carrier+"·"+o.branch),el("b",{style:{color:P,fontSize:".77rem"}},"₭"+fmt(o.total)))
-    ))),
+    el("p",{style:{fontWeight:"900",fontSize:"1.05rem",textAlign:"center",margin:"4px 0 10px"}},"📦 ติดตามสินค้า"),
+    el("div",{style:{display:"flex",gap:"8px",marginBottom:"8px"}},
+      searchInp,
+      el("button",{className:"btn btn-p",style:{width:"auto",padding:"11px 16px",flexShrink:"0"},onclick:doSearch},"ค้นหา")
+    ),
+    myO.length===0&&!user?el("p",{style:{fontSize:".75rem",color:"#8A7A9E",textAlign:"center",marginBottom:"8px"}},"พิมพ์เลขออเดอร์แล้วกด ค้นหา"):null,
+    resDiv,
     el("button",{className:"btn btn-d",style:{marginTop:"8px"},onclick:closeOv},"ปิด")
   ));
+  };
+  const myO=user?orders.filter(o=>o.uid===user.id):[];
+  drawTrack(myO,"");
 }
 
 // ── ADMIN ──────────────────────────────────────────────────────────
@@ -632,13 +669,13 @@ function buildAdminTab(){
   if(aTab===3){
     return el("div",null,...prods.map(p=>{
       const cs=p.colors||[],sz=p.sizes||[];
-      const combos=cs.flatMap(c=>sz.map(s=>({k:c+"|"+s,c,s,q:p.stock?.[c+"|"+s]??0})));
+      const combos=cs.flatMap(c=>sz.map(s=>({k:c+"|"+s,c,s,q:(p.stock&&p.stock[c+"|"+s]||0)})));
       if(!combos.length)return null;
       return el("div",{className:"acard",style:{marginBottom:"10px"}},
         el("div",{style:{display:"flex",alignItems:"center",gap:"8px",marginBottom:"10px"}},el("span",{style:{fontSize:"1.2rem"}},p.img),el("b",{style:{fontSize:".84rem"}},p.name)),
         ...combos.map(({k,c,s,q})=>{
           const qEl=el("span",{style:{width:"28px",textAlign:"center",fontSize:".82rem",fontWeight:"700"}},String(q));
-          const upd=(d)=>{if(!p.stock)p.stock={};p.stock[k]=Math.max(0,(p.stock[k]??0)+d);qEl.textContent=String(p.stock[k]);};
+          const upd=(d)=>{if(!p.stock)p.stock={};p.stock[k]=Math.max(0,(p.stock[k]!=null?p.stock[k]:0)+d);qEl.textContent=String(p.stock[k]);};
           return el("div",{style:{display:"flex",alignItems:"center",gap:"8px",padding:"7px 9px",background:C,borderRadius:"8px",marginBottom:"4px"}},
             el("div",{style:{flex:"1"}},el("span",{style:{fontSize:".78rem",fontWeight:"600",color:"#2D1060"}},c+" / "+s),el("span",{style:{fontSize:".68rem",color:q>0?"#1a7a3a":"#8A7A9E",marginLeft:"6px"}},q>0?q+" ชิ้น":"พรีออเดอร์")),
             el("div",{className:"qctrl"},el("button",{onclick:()=>upd(-1)},"-"),qEl,el("button",{onclick:()=>upd(1)},"+"))
@@ -682,7 +719,38 @@ function buildAdminTab(){
               );})
             ),
             o.items?.some(i=>i.preorder)?el("span",{style:{fontSize:".67rem",background:"#f0e8ff",color:"#5a3d8a",padding:"2px 7px",borderRadius:"6px",fontWeight:"600",marginBottom:"4px",display:"inline-block"}},"📦 มีพรีออเดอร์"):null,
-            el("div",{style:{display:"flex",gap:"10px",alignItems:"center",marginTop:"2px"}},el("b",{style:{color:P,fontSize:".76rem"}},"₭"+fmt(o.total)),cost>0?el("span",{style:{fontSize:".69rem",background:profit>=0?"rgba(37,211,102,.1)":"rgba(200,0,0,.08)",color:profit>=0?"#1a7a3a":"#c00",padding:"2px 7px",borderRadius:"6px",fontWeight:"600"}},"กำไร ₭"+fmt(profit)):null),
+            // Price summary
+            el("div",{style:{background:"#F3F0F7",borderRadius:"8px",padding:"8px 10px",marginTop:"6px",marginBottom:"6px"}},
+              el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:".75rem",color:"#5a4080",marginBottom:"3px"}},
+                el("span",null,"ยอดรวมก่อนส่วนลด"),
+                el("span",null,"₭"+fmt(o.total+(o.discount??0)))
+              ),
+              o.discount>0?[
+                el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:".75rem",color:"#27ae60",marginBottom:"4px"}},
+                  el("span",null,"🏷 ส่วนลด"+(o.coupon?" ("+o.coupon+")":"")),
+                  el("span",null,"-₭"+fmt(o.discount))
+                ),
+                el("div",{style:{borderTop:"1px dashed #C4A8DC",marginBottom:"4px"}})
+              ]:null,
+              el("div",{style:{display:"flex",justifyContent:"space-between",fontWeight:"700",fontSize:".85rem",color:P}},
+                el("span",null,"💳 ยอดที่ชำระจริง"),
+                el("span",null,"₭"+fmt(o.total))
+              ),
+              cost>0?el("div",{style:{display:"flex",justifyContent:"space-between",fontSize:".72rem",color:profit>=0?"#1a7a3a":"#c00",marginTop:"4px"}},
+                el("span",null,"📊 กำไร"),
+                el("span",{style:{fontWeight:"600"}},"₭"+fmt(profit))
+              ):null
+            ),
+            // Slip image
+            o.slip&&isUrl(o.slip)?el("div",null,
+              el("div",{style:{fontSize:".72rem",fontWeight:"700",color:"#3B2060",marginBottom:"6px"}},"🧾 สลิปโอนเงิน"),
+              el("img",{src:o.slip,style:{width:"100%",borderRadius:"10px",cursor:"pointer",display:"block",border:"2px solid #C4A8DC"},
+                onclick:()=>{
+                  const ov=el("div",{style:{position:"fixed",inset:"0",background:"rgba(0,0,0,.9)",zIndex:"999",display:"flex",alignItems:"center",justifyContent:"center",padding:"16px"},onclick:function(e){if(e.target===ov)ov.remove();}});
+                  ov.appendChild(el("img",{src:o.slip,style:{maxWidth:"100%",maxHeight:"90vh",borderRadius:"10px",objectFit:"contain"}}));
+                  document.body.appendChild(ov);
+                }})
+            ):null,
             o.phone?el("button",{style:{background:"#25D366",color:"#fff",border:"none",padding:"5px 11px",borderRadius:"8px",fontSize:".72rem",fontWeight:"600",cursor:"pointer",fontFamily:"inherit",marginTop:"6px"},onclick:()=>{const msg="แจ้งสถานะออเดอร์\n\nออเดอร์หมายเลข "+String(o.id).slice(-6)+" ของคุณ ("+o.name+") ขณะนี้อยู่ในสถานะ: "+o.status+"\n\nขอบคุณที่ใช้บริการ TheFish Store หากมีคำถามใดๆ กรุณาติดต่อเราได้เลยค่ะ";window.open("https://wa.me/"+o.phone.replace(/[^0-9]/g,"")+"?text="+encodeURIComponent(msg),"_blank");}},"ส่งอัปเดตสถานะ WhatsApp"):null
           );
         }))
