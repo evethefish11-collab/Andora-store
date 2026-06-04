@@ -926,7 +926,7 @@ function renderCo(){
       el("button",{className:"mcl",onclick:()=>{closeOv();render();}},"✕"),
       el("p",{style:{fontSize:"1.1rem",fontWeight:"700",marginBottom:"8px"}},"📎 สลิป & ข้อมูลจัดส่ง"),
       coSlip?el("img",{src:coSlip,style:{width:"100%",borderRadius:"10px",marginBottom:"8px",maxHeight:"120px",objectFit:"cover"},alt:"slip"}):null,
-      el("label",{className:"uplbl",style:{borderColor:coSlip?"#27ae60":"#e74c3c",color:coSlip?"#27ae60":"#e74c3c"}},coSlip?"✅ สลิปอัปโหลดแล้ว":"📷 อัปโหลดสลิป * (บังคับ)",el("input",{type:"file",accept:"image/*",capture:"environment",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{coSlip=ev.target.result;renderCo();};r.readAsDataURL(f);}})),
+      el("label",{className:"uplbl",style:{borderColor:coSlip?"#27ae60":"#e74c3c",color:coSlip?"#27ae60":"#e74c3c"}},coSlip?"✅ สลิปอัปโหลดแล้ว":"📷 อัปโหลดสลิป * (บังคับ)",el("input",{type:"file",accept:"image/*",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{coSlip=ev.target.result;renderCo();};r.readAsDataURL(f);}})),
       el("label",{className:"lbl"},"ชื่อผู้รับ *"),inp("ชื่อ-นามสกุล","n"),
       el("label",{className:"lbl"},"เบอร์โทร * (ลาว)"),
       el("div",{style:{display:"flex",gap:"0",alignItems:"stretch",marginBottom:"10px"}},
@@ -1135,7 +1135,7 @@ function buildAdminTab(){
     const v={name:"",cat:"โยคะ",price:"",cost:"",colors:"",sizes:"",tag:"",img:null};
     const inp=(ph,k,t="text")=>{const i=el("input",{className:"inp",placeholder:ph,type:t});i.oninput=e=>v[k]=e.target.value;return i;};
     const prev=el("div",{style:{display:"block",marginBottom:"8px",minHeight:"40px"}});
-    const fi=el("input",{type:"file",accept:"image/*",capture:"environment",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;
+    const fi=el("input",{type:"file",accept:"image/*",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;
               const r=new FileReader();
               r.onload=function(ev){
                 resizeImage(f,800,800,0.82,function(resized){
