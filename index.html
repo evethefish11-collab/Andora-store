@@ -620,6 +620,90 @@ setTimeout(function(){
   }
 }, 3000);
 
+// ── TAG SELECTOR HELPER ─────────────────────────────────────────
+function makeTagSelector(opts, selected, onchange, allowCustom){
+  // opts = preset options array
+  // selected = comma-separated string of current values
+  // onchange = callback(newString)
+  // allowCustom = bool
+  const tags=selected?selected.split(",").map(function(s){return s.trim();}).filter(Boolean):[];
+  const wrap=document.createElement("div");
+  wrap.style.cssText="margin-bottom:10px";
+
+  function render(){
+    wrap.innerHTML="";
+    // Preset chips
+    const presets=document.createElement("div");
+    presets.style.cssText="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px";
+    opts.forEach(function(o){
+      const active=tags.indexOf(o)>=0;
+      const chip=document.createElement("button");
+      chip.type="button";
+      chip.textContent=(active?"✓ ":"")+o;
+      chip.style.cssText="padding:5px 12px;border-radius:20px;border:1.5px solid "+(active?"#5D2D7A":"#C4A8DC")+";background:"+(active?"#5D2D7A":"#fff")+";color:"+(active?"#fff":"#5D2D7A")+";font-size:.75rem;cursor:pointer;font-family:inherit;transition:.15s";
+      chip.addEventListener("click",function(){
+        const i=tags.indexOf(o);
+        if(i>=0)tags.splice(i,1);
+        else tags.push(o);
+        onchange(tags.join(", "));
+        render();
+      });
+      presets.appendChild(chip);
+    });
+    wrap.appendChild(presets);
+
+    // Selected tags display
+    if(tags.length>0){
+      const sel=document.createElement("div");
+      sel.style.cssText="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px";
+      tags.forEach(function(t){
+        const tag=document.createElement("span");
+        tag.style.cssText="display:flex;align-items:center;gap:4px;background:#EDE8F5;color:#5D2D7A;border-radius:20px;padding:3px 10px;font-size:.75rem";
+        tag.textContent=t+" ";
+        const x=document.createElement("button");
+        x.type="button";x.textContent="×";
+        x.style.cssText="background:none;border:none;color:#5D2D7A;cursor:pointer;font-size:.9rem;padding:0;line-height:1";
+        x.addEventListener("click",function(){
+          tags.splice(tags.indexOf(t),1);
+          onchange(tags.join(", "));
+          render();
+        });
+        tag.appendChild(x);
+        sel.appendChild(tag);
+      });
+      wrap.appendChild(sel);
+    }
+
+    // Custom input
+    if(allowCustom){
+      const row=document.createElement("div");
+      row.style.cssText="display:flex;gap:6px";
+      const ci=document.createElement("input");
+      ci.className="inp";ci.placeholder="พิมพ์เพิ่มเองแล้วกด +";
+      ci.style.cssText="flex:1;margin-bottom:0;font-size:.8rem";
+      const addBtn=document.createElement("button");
+      addBtn.type="button";addBtn.textContent="+";
+      addBtn.style.cssText="padding:8px 14px;background:#5D2D7A;color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:1rem;font-family:inherit;flex-shrink:0";
+      addBtn.addEventListener("click",function(){
+        const val=ci.value.trim();
+        if(!val)return;
+        val.split(",").forEach(function(v){
+          const vt=v.trim();
+          if(vt&&tags.indexOf(vt)<0)tags.push(vt);
+        });
+        ci.value="";
+        onchange(tags.join(", "));
+        render();
+      });
+      ci.addEventListener("keydown",function(e){if(e.key==="Enter"){addBtn.click();}});
+      row.appendChild(ci);row.appendChild(addBtn);
+      wrap.appendChild(row);
+    }
+  }
+  render();
+  return wrap;
+}
+
 // ── RENDER ─────────────────────────────────────────────────────────
 function render(){
   clearTimeout(window._fbTimer);
@@ -762,7 +846,24 @@ function showProduct(p){
     const dp=promo?promo.price:p.price;
     showOv(el("div",{className:"mod",onclick:e=>e.stopPropagation()},
       el("button",{className:"mcl",onclick:closeOv},"✕"),
-      el("div",{style:{aspectRatio:"1",borderRadius:"12px",background:p.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"4rem",marginBottom:"12px",overflow:"hidden"}},isUrl(p.img)?el("img",{src:p.img,alt:p.name,style:{width:"100%",height:"100%",objectFit:"cover"}}):p.img),
+      el("div",{style:{aspectRatio:"1",borderRadius:"12px",background:p.bg,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"4rem",marginBottom:"12px",overflow:"hidden",position:"relative"}},(()=>{
+      const imgs=(p.imgs&&p.imgs.filter(function(u){return u&&u!=="__local__";}).length>0)?p.imgs.filter(function(u){return u&&u!=="__local__";}):
+                 (p.img&&p.img!=="__local__"&&isUrl(p.img)?[p.img]:[]);
+      if(imgs.length===0)return el("span",{style:{fontSize:"4rem"}},p.img||"🖼");
+      if(imgs.length===1)return el("img",{src:imgs[0],alt:p.name,style:{width:"100%",height:"100%",objectFit:"cover"}});
+      // Carousel
+      let ci=0;
+      const imgEl=el("img",{src:imgs[0],alt:p.name,style:{width:"100%",height:"100%",objectFit:"cover",transition:"opacity .2s"}});
+      const dots=el("div",{style:{position:"absolute",bottom:"8px",left:"0",right:"0",display:"flex",justifyContent:"center",gap:"5px",zIndex:"2"}},
+        ...imgs.map(function(_,i){return el("div",{style:{width:"7px",height:"7px",borderRadius:"50%",background:i===0?"#fff":"rgba(255,255,255,.5)",cursor:"pointer",transition:".2s"},onclick:function(){ci=i;imgEl.src=imgs[ci];updateDots();}});})
+      );
+      function updateDots(){dots.querySelectorAll("div").forEach(function(d,i){d.style.background=i===ci?"#fff":"rgba(255,255,255,.5)";});}
+      const prev=el("button",{style:{position:"absolute",left:"6px",top:"50%",transform:"translateY(-50%)",background:"rgba(0,0,0,.35)",border:"none",color:"#fff",borderRadius:"50%",width:"28px",height:"28px",cursor:"pointer",fontSize:"1rem",zIndex:"2",fontFamily:"inherit"},onclick:function(){ci=(ci-1+imgs.length)%imgs.length;imgEl.src=imgs[ci];updateDots();}},"‹");
+      const next=el("button",{style:{position:"absolute",right:"6px",top:"50%",transform:"translateY(-50%)",background:"rgba(0,0,0,.35)",border:"none",color:"#fff",borderRadius:"50%",width:"28px",height:"28px",cursor:"pointer",fontSize:"1rem",zIndex:"2",fontFamily:"inherit"},onclick:function(){ci=(ci+1)%imgs.length;imgEl.src=imgs[ci];updateDots();}},"›");
+      const wrap=document.createElement("div");wrap.style.cssText="position:relative;width:100%;height:100%";
+      wrap.appendChild(imgEl);wrap.appendChild(prev);wrap.appendChild(next);wrap.appendChild(dots);
+      return wrap;
+    })()),
       el("div",{style:{fontSize:"1.1rem",fontWeight:"700",marginBottom:"3px"}},p.name),
       el("div",{style:{marginBottom:"8px",display:"flex",gap:"8px",alignItems:"center",flexWrap:"wrap"}},
         el("span",{style:{fontSize:"1.2rem",color:promo?"#ff6b35":P,fontWeight:"700"}},"₭"+fmt(dp)),
@@ -1134,44 +1235,88 @@ function buildAdminTab(){
   if(effectiveTab===1){
     const v={name:"",cat:"โยคะ",price:"",cost:"",colors:"",sizes:"",tag:"",img:null};
     const inp=(ph,k,t="text")=>{const i=el("input",{className:"inp",placeholder:ph,type:t});i.oninput=e=>v[k]=e.target.value;return i;};
-    const prev=el("div",{style:{display:"block",marginBottom:"8px",minHeight:"40px"}});
-    const fi=el("input",{type:"file",accept:"image/*",style:{display:"none"},onchange:e=>{const f=e.target.files[0];if(!f)return;
-              const r=new FileReader();
-              r.onload=function(ev){
-                resizeImage(f,800,800,0.82,function(resized){
-                  prev.style.display="block";
-                  prev.innerHTML="<div style='padding:20px;text-align:center;color:#888;font-size:.75rem'>⬆️ กำลังอัปโหลด...</div>";
-                  uploadToCloudinary(resized,"andora/products").then(function(url){
-                    v.img=url;
-                    if(!v.imgs)v.imgs=[];
-                    if(v.imgs.length===0)v.imgs.push(url);
-                    else v.imgs[0]=url;
-                    prev.innerHTML="";
-                    prev.appendChild(el("img",{src:url,style:{width:"100%",maxHeight:"120px",objectFit:"cover",borderRadius:"8px"}}));
-                  });
-                });
-              };
-              r.readAsDataURL(f);}});
-    return el("div",{className:"acard"},el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"เพิ่มสินค้าใหม่"),
-      el("label",{className:"lbl"},"ชื่อสินค้า *"),inp("ชื่อสินค้า","name"),
-      el("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},el("div",null,el("label",{className:"lbl"},"ราคา (₭)*"),inp("89000","price","number")),el("div",null,el("label",{className:"lbl"},"ต้นทุน (₭)"),inp("50000","cost","number"))),
+    const imgRow=el("div",{style:{display:"flex",gap:"8px",flexWrap:"wrap",marginBottom:"8px"}});
+    if(!v.imgs)v.imgs=[];
+    // Restore existing images
+    v.imgs.forEach(function(url,i){addImgThumb(url,i);});
+    function addImgThumb(url,idx2){
+      const wrap=document.createElement("div");wrap.style.cssText="position:relative;width:72px;height:72px;flex-shrink:0";
+      const thumb=el("img",{src:url,style:{width:"72px",height:"72px",borderRadius:"8px",objectFit:"cover",border:"2px solid #9A7ABE"}});
+      const del=el("button",{style:{position:"absolute",top:"-6px",right:"-6px",background:"#c00",color:"#fff",border:"none",borderRadius:"50%",width:"20px",height:"20px",cursor:"pointer",fontSize:".75rem",lineHeight:"20px",textAlign:"center",padding:"0"},
+        onclick:function(){v.imgs.splice(idx2,1);if(v.imgs.length>0)v.img=v.imgs[0];else v.img=null;imgRow.innerHTML="";v.imgs.forEach(function(u,j){addImgThumb(u,j);});}
+      },"✕");
+      wrap.appendChild(thumb);wrap.appendChild(del);imgRow.appendChild(wrap);
+    }
+    const fi=document.createElement("input");
+    fi.type="file";fi.accept="image/*";fi.multiple=true;fi.style.display="none";
+    fi.addEventListener("change",function(e){
+      const files=Array.from(e.target.files);
+      files.forEach(function(f){
+        const r=new FileReader();
+        r.onload=function(){
+          resizeImage(f,800,800,0.82,function(resized){
+            // Show loading thumb
+            const loadWrap=document.createElement("div");
+            loadWrap.style.cssText="width:72px;height:72px;border-radius:8px;background:#EDE8F5;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#888;flex-shrink:0";
+            loadWrap.textContent="⬆️";
+            imgRow.appendChild(loadWrap);
+            uploadToCloudinary(resized,"andora/products").then(function(url){
+              loadWrap.remove();
+              v.imgs.push(url);
+              if(!v.img)v.img=url;
+              addImgThumb(url,v.imgs.length-1);
+            }).catch(function(){
+              loadWrap.remove();
+              v.imgs.push(resized);
+              if(!v.img)v.img=resized;
+              addImgThumb(resized,v.imgs.length-1);
+            });
+          });
+        };
+        r.readAsDataURL(f);
+      });
+      fi.value="";
+    });
+    // Build the return UI
+    return el("div",{className:"acard"},
+      el("div",{style:{fontWeight:"700",marginBottom:"10px"}},"➕ เพิ่มสินค้าใหม่"),
+      el("label",{className:"lbl"},"📷 รูปสินค้า (เลือกได้หลายรูป)"),
+      imgRow,
+      el("label",{className:"uplbl",style:{marginBottom:"10px",display:"inline-flex",alignItems:"center",gap:"6px"}},"📷 เพิ่มรูปสินค้า",fi),
+      el("label",{className:"lbl"},"ชื่อสินค้า *"),inp("เช่น เสื้อ Crop Top","name"),
       el("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}},
-        el("div",null,el("label",{className:"lbl"},"หมวดหมู่"),el("select",{className:"sel",onchange:e=>v.cat=e.target.value},...PCATS.map(c=>el("option",{value:c},c)))),
-        el("div",null,el("label",{className:"lbl"},"แท็ก"),el("select",{className:"sel",onchange:e=>v.tag=e.target.value},el("option",{value:""},"ไม่มี"),el("option",{value:"sale"},"ขายดี"),el("option",{value:"new"},"ใหม่")))
+        el("div",null,el("label",{className:"lbl"},"ราคา (₭) *"),inp("เช่น 75000","price","number")),
+        el("div",null,el("label",{className:"lbl"},"ต้นทุน (₭)"),inp("เช่น 30000","cost","number"))
       ),
-      el("label",{className:"lbl"},"🎨 สี (คั่น ,)"),inp("ดำ, ขาว, ชมพู","colors"),
-      el("label",{className:"lbl"},"📏 ขนาด (คั่น ,)"),inp("S, M, L, XL","sizes"),
+      el("label",{className:"lbl"},"🎨 สี"),
+      makeTagSelector(["ดำ","ขาว","ชมพู","เทา","น้ำเงิน","แดง","เขียว","เหลือง","ม่วง","ส้ม","น้ำตาล","ครีม","ฟ้า"],v.colors||"",function(val){v.colors=val;},true),
+      el("label",{className:"lbl"},"📏 ขนาด"),
+      makeTagSelector(["XS","S","M","L","XL","XXL","36","37","38","39","40","41","42","500ml","750ml","1L","Free Size"],v.sizes||"",function(val){v.sizes=val;},true),
+      el("label",{className:"lbl"},"📂 หมวดหมู่"),
+      (()=>{
+        const catWrap=document.createElement("div");
+        const catSel=document.createElement("select");catSel.className="sel";
+        const allCats=[...PCATS];
+        if(v.cat&&allCats.indexOf(v.cat)<0)allCats.push(v.cat);
+        allCats.forEach(function(c){const opt=document.createElement("option");opt.value=c;opt.textContent=c;if(v.cat===c)opt.selected=true;catSel.appendChild(opt);});
+        const customOpt=document.createElement("option");customOpt.value="__custom__";customOpt.textContent="+ เพิ่มหมวดหมู่ใหม่...";catSel.appendChild(customOpt);
+        catSel.addEventListener("change",function(){if(this.value==="__custom__"){const nc=prompt("ชื่อหมวดหมู่ใหม่:");if(nc&&nc.trim()){v.cat=nc.trim();if(PCATS.indexOf(v.cat)<0)PCATS.push(v.cat);this.value=v.cat;}else{this.value=v.cat||PCATS[0];}}else{v.cat=this.value;}});
+        catWrap.appendChild(catSel);return catWrap;
+      })(),
+      el("label",{className:"lbl"},"แท็ก"),
+      el("select",{className:"sel",onchange:function(e){v.tag=e.target.value;}},
+        el("option",{value:""},"ไม่มี"),el("option",{value:"sale"},"ขายดี"),el("option",{value:"new"},"ใหม่")
+      ),
       el("div",{style:{display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",background:"#F3F0F7",borderRadius:"10px",marginBottom:"8px"}},
         (()=>{const cb=document.createElement("input");cb.type="checkbox";cb.style.cssText="width:18px;height:18px;cursor:pointer;accent-color:#5D2D7A;";cb.addEventListener("change",function(){v.refundable=this.checked;});return cb;})(),
         el("span",{style:{fontSize:".85rem",fontWeight:"600",color:"#2A1450"}},"🔄 คืนสินค้าได้ภายใน 3 วัน")
       ),
-      el("label",{className:"lbl"},"🖼 รูปภาพ"),prev,el("label",{className:"uplbl",style:{marginBottom:"8px",display:"block"}},"📷 เลือกรูปสินค้า",fi),
-      el("button",{className:"btn btn-p",onclick:()=>{
+      el("button",{className:"btn btn-p",onclick:function(){
         if(!v.name||!v.price){toast("กรุณากรอกชื่อและราคา");return;}
         const cs=v.colors.split(",").map(s=>s.trim()).filter(Boolean);
         const sz=v.sizes.split(",").map(s=>s.trim()).filter(Boolean);
         const st={};cs.forEach(c=>sz.forEach(s=>{st[c+"|"+s]=0;}));
-        const np={id:Date.now(),name:v.name,cat:v.cat,price:Number(v.price),cost:Number(v.cost)||0,img:v.img||"🏋️",colors:cs,sizes:sz,tag:v.tag||null,bg:"linear-gradient(135deg,#E8D8F5,#B89AC8)",stock:st};
+        const np={id:Date.now(),name:v.name,cat:v.cat,price:Number(v.price),cost:Number(v.cost)||0,img:v.img||"🏋️",imgs:v.imgs||[],colors:cs,sizes:sz,tag:v.tag||null,bg:"linear-gradient(135deg,#E8D8F5,#B89AC8)",stock:st,refundable:v.refundable||false,shopId:isShop?(user&&user.shopId):null};
         prods.unshift(np);saveToCloud("prods",np.id,np);aTab=0;render();toast("เพิ่มสินค้าสำเร็จ ✓");
       }},"➕ เพิ่มสินค้า")
     );
